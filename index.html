@@ -1,0 +1,73 @@
+
+   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Facebook Login Example</title>
+</head>
+<body>
+
+  <h2>Facebook Login Demo</h2>
+
+  <!-- Facebook login button -->
+  <fb:login-button 
+    scope="public_profile,email" 
+    onlogin="checkLoginState();">
+  </fb:login-button>
+
+  <div id="status"></div>
+
+  <!-- Load the Facebook SDK -->
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : 'YOUR_APP_ID', // Replace with your Facebook app ID
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v17.0'
+      });
+
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    };
+
+    // Load the SDK asynchronously
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    // Called when login status changes
+    function statusChangeCallback(response) {
+      if (response.status === 'connected') {
+        // Logged into your app and Facebook
+        fetchUserProfile();
+      } else {
+        document.getElementById('status').innerHTML = 'Please log into this app.';
+      }
+    }
+
+    // Check login state after login button is clicked
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
+
+    // Fetch user profile info
+    function fetchUserProfile() {
+      FB.api('/me', {fields: 'name,email'}, function(response) {
+        document.getElementById('status').innerHTML =
+          'Thanks for logging in, ' + response.name + ' (' + response.email + ')!';
+      });
+    }
+  </script>
+
+</body>
+</html>
